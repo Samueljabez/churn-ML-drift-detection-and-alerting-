@@ -1,0 +1,428 @@
+{
+  "timestamp": "2026-03-24T15:21:53.282461",
+  "overall_status": "CRITICAL",
+  "summary": {
+    "total_features": 19,
+    "numeric_drifted": 4,
+    "categorical_drifted": 15,
+    "high_severity": 14,
+    "medium_severity": 5,
+    "samples_analyzed": 10
+  },
+  "numeric_features": {
+    "SeniorCitizen": {
+      "train_mean": 0.16,
+      "train_std": 0.37,
+      "new_mean": 0.8,
+      "new_std": 0.4,
+      "mean_shift": 0.64,
+      "z_score": 1.733,
+      "z_severity": "MEDIUM",
+      "ks_statistic": 0.789,
+      "ks_p_value": 0.0,
+      "ks_severity": "HIGH",
+      "psi": 0.1733,
+      "psi_severity": "MEDIUM",
+      "severity": "HIGH",
+      "drift_detected": true
+    },
+    "tenure": {
+      "train_mean": 32.56,
+      "train_std": 24.54,
+      "new_mean": 1.5,
+      "new_std": 0.67,
+      "mean_shift": -31.06,
+      "z_score": 1.266,
+      "z_severity": "LOW",
+      "ks_statistic": 0.886,
+      "ks_p_value": 0.0,
+      "ks_severity": "HIGH",
+      "psi": 0.1266,
+      "psi_severity": "MEDIUM",
+      "severity": "HIGH",
+      "drift_detected": true
+    },
+    "MonthlyCharges": {
+      "train_mean": 65.0,
+      "train_std": 30.11,
+      "new_mean": 100.72,
+      "new_std": 5.83,
+      "mean_shift": 35.72,
+      "z_score": 1.186,
+      "z_severity": "LOW",
+      "ks_statistic": 0.796,
+      "ks_p_value": 0.0,
+      "ks_severity": "HIGH",
+      "psi": 0.1186,
+      "psi_severity": "MEDIUM",
+      "severity": "HIGH",
+      "drift_detected": true
+    },
+    "TotalCharges": {
+      "train_mean": 2301.84,
+      "train_std": 2275.59,
+      "new_mean": 151.08,
+      "new_std": 69.05,
+      "mean_shift": -2150.75,
+      "z_score": 0.945,
+      "z_severity": "LOW",
+      "ks_statistic": 0.809,
+      "ks_p_value": 0.0,
+      "ks_severity": "HIGH",
+      "psi": 0.0945,
+      "psi_severity": "LOW",
+      "severity": "HIGH",
+      "drift_detected": true
+    }
+  },
+  "categorical_features": {
+    "gender": {
+      "train_categories": [
+        "Male",
+        "Female"
+      ],
+      "new_categories": null,
+      "missing_categories": null,
+      "max_proportion_shift": 0.202,
+      "proportion_shifts": {
+        "Male": 0.202,
+        "Female": 0.202
+      },
+      "proportion_severity": "MEDIUM",
+      "chi2_statistic": 1.63,
+      "chi2_p_value": 0.2017,
+      "chi2_severity": "LOW",
+      "psi": 0.0838,
+      "psi_severity": "LOW",
+      "severity": "MEDIUM",
+      "drift_detected": true
+    },
+    "Partner": {
+      "train_categories": [
+        "No",
+        "Yes"
+      ],
+      "new_categories": null,
+      "missing_categories": null,
+      "max_proportion_shift": 0.286,
+      "proportion_shifts": {
+        "No": 0.286,
+        "Yes": 0.286
+      },
+      "proportion_severity": "MEDIUM",
+      "chi2_statistic": 3.28,
+      "chi2_p_value": 0.0703,
+      "chi2_severity": "LOW",
+      "psi": 0.1764,
+      "psi_severity": "MEDIUM",
+      "severity": "MEDIUM",
+      "drift_detected": true
+    },
+    "Dependents": {
+      "train_categories": [
+        "No",
+        "Yes"
+      ],
+      "new_categories": null,
+      "missing_categories": null,
+      "max_proportion_shift": 0.2,
+      "proportion_shifts": {
+        "No": 0.2,
+        "Yes": 0.2
+      },
+      "proportion_severity": "LOW",
+      "chi2_statistic": 1.9,
+      "chi2_p_value": 0.1683,
+      "chi2_severity": "LOW",
+      "psi": 0.1159,
+      "psi_severity": "MEDIUM",
+      "severity": "MEDIUM",
+      "drift_detected": true
+    },
+    "PhoneService": {
+      "train_categories": [
+        "No",
+        "Yes"
+      ],
+      "new_categories": null,
+      "missing_categories": [
+        "No"
+      ],
+      "max_proportion_shift": 0.097,
+      "proportion_shifts": {
+        "Yes": 0.097
+      },
+      "proportion_severity": "LOW",
+      "chi2_statistic": 1.07,
+      "chi2_p_value": 0.3003,
+      "chi2_severity": "LOW",
+      "psi": 0.1019,
+      "psi_severity": "MEDIUM",
+      "severity": "MEDIUM",
+      "drift_detected": true
+    },
+    "MultipleLines": {
+      "train_categories": [
+        "No",
+        "No phone service",
+        "Yes"
+      ],
+      "new_categories": null,
+      "missing_categories": [
+        "No phone service"
+      ],
+      "max_proportion_shift": 0.476,
+      "proportion_shifts": {
+        "No": 0.379,
+        "Yes": 0.476
+      },
+      "proportion_severity": "HIGH",
+      "chi2_statistic": 9.31,
+      "chi2_p_value": 0.0095,
+      "chi2_severity": "HIGH",
+      "psi": 0.5207,
+      "psi_severity": "HIGH",
+      "severity": "HIGH",
+      "drift_detected": true
+    },
+    "InternetService": {
+      "train_categories": [
+        "Fiber optic",
+        "No",
+        "DSL"
+      ],
+      "new_categories": null,
+      "missing_categories": [
+        "No"
+      ],
+      "max_proportion_shift": 0.459,
+      "proportion_shifts": {
+        "Fiber optic": 0.459,
+        "DSL": 0.244
+      },
+      "proportion_severity": "HIGH",
+      "chi2_statistic": 8.64,
+      "chi2_p_value": 0.0133,
+      "chi2_severity": "MEDIUM",
+      "psi": 0.5177,
+      "psi_severity": "HIGH",
+      "severity": "HIGH",
+      "drift_detected": true
+    },
+    "OnlineSecurity": {
+      "train_categories": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "new_categories": null,
+      "missing_categories": [
+        "No internet service"
+      ],
+      "max_proportion_shift": 0.402,
+      "proportion_shifts": {
+        "No": 0.402,
+        "Yes": 0.187
+      },
+      "proportion_severity": "HIGH",
+      "chi2_statistic": 6.6,
+      "chi2_p_value": 0.0368,
+      "chi2_severity": "MEDIUM",
+      "psi": 0.4266,
+      "psi_severity": "HIGH",
+      "severity": "HIGH",
+      "drift_detected": true
+    },
+    "OnlineBackup": {
+      "train_categories": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "new_categories": null,
+      "missing_categories": [
+        "No internet service"
+      ],
+      "max_proportion_shift": 0.465,
+      "proportion_shifts": {
+        "No": 0.465,
+        "Yes": 0.25
+      },
+      "proportion_severity": "HIGH",
+      "chi2_statistic": 8.91,
+      "chi2_p_value": 0.0116,
+      "chi2_severity": "MEDIUM",
+      "psi": 0.5293,
+      "psi_severity": "HIGH",
+      "severity": "HIGH",
+      "drift_detected": true
+    },
+    "DeviceProtection": {
+      "train_categories": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "new_categories": null,
+      "missing_categories": [
+        "No internet service"
+      ],
+      "max_proportion_shift": 0.46,
+      "proportion_shifts": {
+        "No": 0.46,
+        "Yes": 0.246
+      },
+      "proportion_severity": "HIGH",
+      "chi2_statistic": 8.71,
+      "chi2_p_value": 0.0128,
+      "chi2_severity": "MEDIUM",
+      "psi": 0.5208,
+      "psi_severity": "HIGH",
+      "severity": "HIGH",
+      "drift_detected": true
+    },
+    "TechSupport": {
+      "train_categories": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "new_categories": null,
+      "missing_categories": [
+        "No internet service"
+      ],
+      "max_proportion_shift": 0.41,
+      "proportion_shifts": {
+        "No": 0.41,
+        "Yes": 0.195
+      },
+      "proportion_severity": "HIGH",
+      "chi2_statistic": 6.85,
+      "chi2_p_value": 0.0325,
+      "chi2_severity": "MEDIUM",
+      "psi": 0.4382,
+      "psi_severity": "HIGH",
+      "severity": "HIGH",
+      "drift_detected": true
+    },
+    "StreamingTV": {
+      "train_categories": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "new_categories": null,
+      "missing_categories": [
+        "No internet service"
+      ],
+      "max_proportion_shift": 0.511,
+      "proportion_shifts": {
+        "No": 0.296,
+        "Yes": 0.511
+      },
+      "proportion_severity": "HIGH",
+      "chi2_statistic": 11.08,
+      "chi2_p_value": 0.0039,
+      "chi2_severity": "HIGH",
+      "psi": 0.6173,
+      "psi_severity": "HIGH",
+      "severity": "HIGH",
+      "drift_detected": true
+    },
+    "StreamingMovies": {
+      "train_categories": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "new_categories": null,
+      "missing_categories": [
+        "No internet service"
+      ],
+      "max_proportion_shift": 0.51,
+      "proportion_shifts": {
+        "No": 0.295,
+        "Yes": 0.51
+      },
+      "proportion_severity": "HIGH",
+      "chi2_statistic": 11.01,
+      "chi2_p_value": 0.0041,
+      "chi2_severity": "HIGH",
+      "psi": 0.6147,
+      "psi_severity": "HIGH",
+      "severity": "HIGH",
+      "drift_detected": true
+    },
+    "Contract": {
+      "train_categories": [
+        "Month-to-month",
+        "One year",
+        "Two year"
+      ],
+      "new_categories": null,
+      "missing_categories": [
+        "Two year"
+      ],
+      "max_proportion_shift": 0.352,
+      "proportion_shifts": {
+        "Month-to-month": 0.352,
+        "One year": 0.11
+      },
+      "proportion_severity": "HIGH",
+      "chi2_statistic": 5.24,
+      "chi2_p_value": 0.0726,
+      "chi2_severity": "LOW",
+      "psi": 0.3715,
+      "psi_severity": "HIGH",
+      "severity": "HIGH",
+      "drift_detected": true
+    },
+    "PaperlessBilling": {
+      "train_categories": [
+        "No",
+        "Yes"
+      ],
+      "new_categories": null,
+      "missing_categories": null,
+      "max_proportion_shift": 0.305,
+      "proportion_shifts": {
+        "No": 0.305,
+        "Yes": 0.305
+      },
+      "proportion_severity": "MEDIUM",
+      "chi2_statistic": 3.85,
+      "chi2_p_value": 0.0497,
+      "chi2_severity": "MEDIUM",
+      "psi": 0.2321,
+      "psi_severity": "MEDIUM",
+      "severity": "MEDIUM",
+      "drift_detected": true
+    },
+    "PaymentMethod": {
+      "train_categories": [
+        "Electronic check",
+        "Mailed check",
+        "Credit card (automatic)",
+        "Bank transfer (automatic)"
+      ],
+      "new_categories": null,
+      "missing_categories": [
+        "Credit card (automatic)",
+        "Bank transfer (automatic)"
+      ],
+      "max_proportion_shift": 0.561,
+      "proportion_shifts": {
+        "Electronic check": 0.561,
+        "Mailed check": 0.125
+      },
+      "proportion_severity": "HIGH",
+      "chi2_statistic": 14.34,
+      "chi2_p_value": 0.0025,
+      "chi2_severity": "HIGH",
+      "psi": 0.7974,
+      "psi_severity": "HIGH",
+      "severity": "HIGH",
+      "drift_detected": true
+    }
+  }
+}

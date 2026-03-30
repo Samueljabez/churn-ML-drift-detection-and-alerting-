@@ -1,0 +1,29 @@
+{
+  "model_type": "XGBClassifier",
+  "model_description": "XGBoost with hyperparameter tuning and class imbalance handling (scale_pos_weight)",
+  "features": 30,
+  "training_samples": 5625,
+  "test_samples": 1407,
+  "test_accuracy": 0.8031272210376688,
+  "test_precision": 0.6456456456456456,
+  "test_recall": 0.5748663101604278,
+  "test_f1_score": 0.6082036775106082,
+  "roc_auc": 0.836503667734805,
+  "classes": [
+    "No",
+    "Yes"
+  ],
+  "hyperparameters": {
+    "scale_pos_weight": "Dynamically calculated to handle class imbalance",
+    "max_depth": "Tuned via GridSearchCV",
+    "learning_rate": "Tuned via GridSearchCV",
+    "subsample": "Tuned via GridSearchCV",
+    "colsample_bytree": "Tuned via GridSearchCV",
+    "n_estimators": "Tuned via GridSearchCV",
+    "eval_metric": "logloss",
+    "random_state": 42
+  },
+  "tuning_strategy": "GridSearchCV with StratifiedKFold (5 splits) and ROC-AUC scoring",
+  "created_date": "2026-01-10",
+  "updated_date": "2026-03-22"
+}

@@ -1,0 +1,25 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.dylib
+*.dll
+
+# Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment and local config
+.env
+.env.*
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Artifacts and logs
+*.log
+*.tmp
+*.bak

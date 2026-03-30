@@ -1,0 +1,61 @@
+{
+  "batch_id": "batch_20260330_163038",
+  "timestamp": "2026-03-30T16:30:40.241378",
+  "run_metadata": {
+    "monitor": "DriftMonitor",
+    "run_mode": "manual_cli",
+    "samples_analyzed": 10,
+    "reference_samples": 500,
+    "alert_policy": "warning"
+  },
+  "input_metadata": {
+    "source": "notebook_prediction_flow"
+  },
+  "custom_detector": {
+    "overall_status": "CRITICAL",
+    "summary": {
+      "total_features": 19,
+      "numeric_drifted": 0,
+      "categorical_drifted": 7,
+      "high_severity": 3,
+      "medium_severity": 4,
+      "samples_analyzed": 10,
+      "timestamp": "2026-03-30T16:30:40.258787",
+      "overall_status": "CRITICAL",
+      "high_severity_features": [
+        "OnlineSecurity",
+        "TechSupport",
+        "StreamingTV"
+      ],
+      "medium_severity_features": [
+        "InternetService",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "DeviceProtection",
+        "TechSupport",
+        "StreamingTV",
+        "StreamingMovies"
+      ]
+    },
+    "detailed_report": "D:\\production-ready-project\\data\\drift_history\\drift_report_20260330_163040.json"
+  },
+  "alerting": {
+    "alert_triggered": true,
+    "alert_level": "CRITICAL",
+    "alert_message": "Drift status=CRITICAL | high=3, medium=4 | batch=batch_20260330_163038",
+    "status": "CRITICAL",
+    "high_severity": 3,
+    "medium_severity": 4,
+    "evaluated_at": "2026-03-30T16:30:40.241378",
+    "enabled": true,
+    "level": "CRITICAL",
+    "message": "Drift status=CRITICAL | high=3, medium=4 | batch=batch_20260330_163038",
+    "console_sent": true,
+    "webhook_sent": false,
+    "webhook_error": null
+  },
+  "artifacts": {
+    "custom_report_json": "D:\\production-ready-project\\data\\drift_history\\drift_report_20260330_163040.json"
+  },
+  "combined_verdict": "CRITICAL - Drift alert triggered. Immediate action recommended."
+}

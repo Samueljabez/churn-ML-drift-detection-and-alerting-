@@ -1,0 +1,81 @@
+{
+  "batch_id": "single_20260330_164332",
+  "timestamp": "2026-03-30T16:43:32.422048",
+  "run_metadata": {
+    "monitor": "DriftMonitor",
+    "run_mode": "manual_cli",
+    "samples_analyzed": 1,
+    "reference_samples": 500,
+    "alert_policy": "warning"
+  },
+  "input_metadata": {
+    "source": "notebook_prediction_flow"
+  },
+  "custom_detector": {
+    "overall_status": "CRITICAL",
+    "summary": {
+      "total_features": 19,
+      "numeric_drifted": 1,
+      "categorical_drifted": 15,
+      "high_severity": 14,
+      "medium_severity": 2,
+      "samples_analyzed": 1,
+      "timestamp": "2026-03-30T16:43:32.439985",
+      "overall_status": "CRITICAL",
+      "high_severity_features": [
+        "gender",
+        "Partner",
+        "Dependents",
+        "MultipleLines",
+        "InternetService",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "DeviceProtection",
+        "TechSupport",
+        "StreamingTV",
+        "StreamingMovies",
+        "Contract",
+        "PaperlessBilling",
+        "PaymentMethod"
+      ],
+      "medium_severity_features": [
+        "tenure",
+        "gender",
+        "Partner",
+        "Dependents",
+        "PhoneService",
+        "MultipleLines",
+        "InternetService",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "DeviceProtection",
+        "TechSupport",
+        "StreamingTV",
+        "StreamingMovies",
+        "Contract",
+        "PaperlessBilling",
+        "PaymentMethod"
+      ]
+    },
+    "detailed_report": "D:\\production-ready-project\\data\\drift_history\\drift_report_20260330_164332.json"
+  },
+  "alerting": {
+    "alert_triggered": true,
+    "alert_level": "CRITICAL",
+    "alert_message": "Drift status=CRITICAL | high=14, medium=2 | batch=single_20260330_164332",
+    "status": "CRITICAL",
+    "high_severity": 14,
+    "medium_severity": 2,
+    "evaluated_at": "2026-03-30T16:43:32.422048",
+    "enabled": true,
+    "level": "CRITICAL",
+    "message": "Drift status=CRITICAL | high=14, medium=2 | batch=single_20260330_164332",
+    "console_sent": true,
+    "webhook_sent": false,
+    "webhook_error": null
+  },
+  "artifacts": {
+    "custom_report_json": "D:\\production-ready-project\\data\\drift_history\\drift_report_20260330_164332.json"
+  },
+  "combined_verdict": "CRITICAL - Drift alert triggered. Immediate action recommended."
+}

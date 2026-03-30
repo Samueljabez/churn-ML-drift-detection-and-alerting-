@@ -1,0 +1,11 @@
+customerID,gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,Churn
+DRIFT-001,Female,1,No,No,1,Yes,Yes,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,95.5,95.5,Yes
+DRIFT-002,Female,1,No,No,1,Yes,Yes,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,105.0,105.0,Yes
+DRIFT-003,Female,1,No,No,2,Yes,Yes,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,99.8,199.6,Yes
+DRIFT-004,Female,1,No,No,1,Yes,Yes,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,110.25,110.25,Yes
+DRIFT-005,Female,1,No,No,3,Yes,Yes,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,103.5,310.5,Yes
+DRIFT-006,Female,1,Yes,No,1,Yes,No,Fiber optic,No,No,Yes,No,Yes,Yes,Month-to-month,Yes,Electronic check,98.75,98.75,No
+DRIFT-007,Female,0,No,No,2,Yes,Yes,Fiber optic,No,No,No,No,Yes,Yes,Month-to-month,Yes,Electronic check,107.0,214.0,Yes
+DRIFT-008,Male,0,No,Yes,1,Yes,Yes,Fiber optic,No,Yes,No,No,Yes,No,Month-to-month,Yes,Electronic check,102.35,102.35,Yes
+DRIFT-009,Male,1,No,No,1,Yes,Yes,Fiber optic,No,No,No,Yes,Yes,Yes,One year,Yes,Mailed check,95.1,95.1,No
+DRIFT-010,Male,1,Yes,No,2,Yes,Yes,DSL,Yes,No,No,No,No,Yes,Month-to-month,No,Electronic check,89.9,179.8,Yes

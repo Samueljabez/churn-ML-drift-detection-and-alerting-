@@ -1,0 +1,305 @@
+{
+  "metadata": {
+    "n_samples": 5625,
+    "n_features": 19,
+    "timestamp": "2026-03-22T15:19:32.654260"
+  },
+  "numeric_features": {
+    "SeniorCitizen": {
+      "mean": 0.16177777777777777,
+      "std": 0.3682795682177908,
+      "min": 0.0,
+      "max": 1.0,
+      "q25": 0.0,
+      "q50": 0.0,
+      "q75": 0.0
+    },
+    "tenure": {
+      "mean": 32.562311111111114,
+      "std": 24.54242128921827,
+      "min": 1.0,
+      "max": 72.0,
+      "q25": 9.0,
+      "q50": 29.0,
+      "q75": 56.0
+    },
+    "MonthlyCharges": {
+      "mean": 64.99931555555555,
+      "std": 30.108641816452838,
+      "min": 18.4,
+      "max": 118.65,
+      "q25": 35.8,
+      "q50": 70.6,
+      "q75": 90.05
+    },
+    "TotalCharges": {
+      "mean": 2301.83952,
+      "std": 2275.5860843486544,
+      "min": 18.8,
+      "max": 8684.8,
+      "q25": 413.0,
+      "q50": 1410.25,
+      "q75": 3801.7
+    }
+  },
+  "categorical_features": {
+    "gender": {
+      "unique_values": [
+        "Male",
+        "Female"
+      ],
+      "value_counts": {
+        "Male": 2823,
+        "Female": 2802
+      },
+      "proportions": {
+        "Male": 0.5018666666666667,
+        "Female": 0.4981333333333333
+      },
+      "n_unique": 2
+    },
+    "Partner": {
+      "unique_values": [
+        "Yes",
+        "No"
+      ],
+      "value_counts": {
+        "No": 2891,
+        "Yes": 2734
+      },
+      "proportions": {
+        "No": 0.5139555555555556,
+        "Yes": 0.48604444444444445
+      },
+      "n_unique": 2
+    },
+    "Dependents": {
+      "unique_values": [
+        "Yes",
+        "No"
+      ],
+      "value_counts": {
+        "No": 3940,
+        "Yes": 1685
+      },
+      "proportions": {
+        "No": 0.7004444444444444,
+        "Yes": 0.2995555555555556
+      },
+      "n_unique": 2
+    },
+    "PhoneService": {
+      "unique_values": [
+        "Yes",
+        "No"
+      ],
+      "value_counts": {
+        "Yes": 5080,
+        "No": 545
+      },
+      "proportions": {
+        "Yes": 0.9031111111111111,
+        "No": 0.09688888888888889
+      },
+      "n_unique": 2
+    },
+    "MultipleLines": {
+      "unique_values": [
+        "Yes",
+        "No phone service",
+        "No"
+      ],
+      "value_counts": {
+        "No": 2695,
+        "Yes": 2385,
+        "No phone service": 545
+      },
+      "proportions": {
+        "No": 0.4791111111111111,
+        "Yes": 0.424,
+        "No phone service": 0.09688888888888889
+      },
+      "n_unique": 3
+    },
+    "InternetService": {
+      "unique_values": [
+        "Fiber optic",
+        "DSL",
+        "No"
+      ],
+      "value_counts": {
+        "Fiber optic": 2483,
+        "DSL": 1934,
+        "No": 1208
+      },
+      "proportions": {
+        "Fiber optic": 0.4414222222222222,
+        "DSL": 0.3438222222222222,
+        "No": 0.21475555555555556
+      },
+      "n_unique": 3
+    },
+    "OnlineSecurity": {
+      "unique_values": [
+        "Yes",
+        "No",
+        "No internet service"
+      ],
+      "value_counts": {
+        "No": 2803,
+        "Yes": 1614,
+        "No internet service": 1208
+      },
+      "proportions": {
+        "No": 0.4983111111111111,
+        "Yes": 0.2869333333333333,
+        "No internet service": 0.21475555555555556
+      },
+      "n_unique": 3
+    },
+    "OnlineBackup": {
+      "unique_values": [
+        "Yes",
+        "No",
+        "No internet service"
+      ],
+      "value_counts": {
+        "No": 2446,
+        "Yes": 1971,
+        "No internet service": 1208
+      },
+      "proportions": {
+        "No": 0.4348444444444444,
+        "Yes": 0.3504,
+        "No internet service": 0.21475555555555556
+      },
+      "n_unique": 3
+    },
+    "DeviceProtection": {
+      "unique_values": [
+        "Yes",
+        "No",
+        "No internet service"
+      ],
+      "value_counts": {
+        "No": 2473,
+        "Yes": 1944,
+        "No internet service": 1208
+      },
+      "proportions": {
+        "No": 0.43964444444444445,
+        "Yes": 0.3456,
+        "No internet service": 0.21475555555555556
+      },
+      "n_unique": 3
+    },
+    "TechSupport": {
+      "unique_values": [
+        "Yes",
+        "No",
+        "No internet service"
+      ],
+      "value_counts": {
+        "No": 2759,
+        "Yes": 1658,
+        "No internet service": 1208
+      },
+      "proportions": {
+        "No": 0.49048888888888886,
+        "Yes": 0.29475555555555555,
+        "No internet service": 0.21475555555555556
+      },
+      "n_unique": 3
+    },
+    "StreamingTV": {
+      "unique_values": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "value_counts": {
+        "No": 2229,
+        "Yes": 2188,
+        "No internet service": 1208
+      },
+      "proportions": {
+        "No": 0.39626666666666666,
+        "Yes": 0.38897777777777776,
+        "No internet service": 0.21475555555555556
+      },
+      "n_unique": 3
+    },
+    "StreamingMovies": {
+      "unique_values": [
+        "No",
+        "Yes",
+        "No internet service"
+      ],
+      "value_counts": {
+        "No": 2222,
+        "Yes": 2195,
+        "No internet service": 1208
+      },
+      "proportions": {
+        "No": 0.3950222222222222,
+        "Yes": 0.39022222222222225,
+        "No internet service": 0.21475555555555556
+      },
+      "n_unique": 3
+    },
+    "Contract": {
+      "unique_values": [
+        "Two year",
+        "Month-to-month",
+        "One year"
+      ],
+      "value_counts": {
+        "Month-to-month": 3085,
+        "Two year": 1358,
+        "One year": 1182
+      },
+      "proportions": {
+        "Month-to-month": 0.5484444444444444,
+        "Two year": 0.24142222222222223,
+        "One year": 0.21013333333333334
+      },
+      "n_unique": 3
+    },
+    "PaperlessBilling": {
+      "unique_values": [
+        "No",
+        "Yes"
+      ],
+      "value_counts": {
+        "Yes": 3349,
+        "No": 2276
+      },
+      "proportions": {
+        "Yes": 0.5953777777777778,
+        "No": 0.4046222222222222
+      },
+      "n_unique": 2
+    },
+    "PaymentMethod": {
+      "unique_values": [
+        "Credit card (automatic)",
+        "Electronic check",
+        "Bank transfer (automatic)",
+        "Mailed check"
+      ],
+      "value_counts": {
+        "Electronic check": 1907,
+        "Mailed check": 1268,
+        "Bank transfer (automatic)": 1235,
+        "Credit card (automatic)": 1215
+      },
+      "proportions": {
+        "Electronic check": 0.3390222222222222,
+        "Mailed check": 0.22542222222222222,
+        "Bank transfer (automatic)": 0.21955555555555556,
+        "Credit card (automatic)": 0.216
+      },
+      "n_unique": 4
+    }
+  }
+}
