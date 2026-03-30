@@ -1,0 +1,11 @@
+customerID,tenure,monthly_charges,total_charges,internet_service,contract,churn_prediction,churn_probability,risk_level
+TEST-001,12,50.5,606.0,DSL,Month-to-month,Churn,0.5394,MEDIUM
+TEST-002,45,85.25,3836.25,Fiber optic,One year,Stay,0.4708,LOW
+TEST-003,2,45.2,90.4,DSL,Month-to-month,Churn,0.5526,MEDIUM
+TEST-004,24,25.75,619.0,DSL,Two year,Stay,0.0614,LOW
+TEST-005,60,95.0,5700.0,Fiber optic,Month-to-month,Churn,0.5849,MEDIUM
+TEST-006,8,79.85,638.8,Fiber optic,One year,Stay,0.3783,LOW
+TEST-007,36,55.1,1983.6,DSL,Two year,Stay,0.0405,LOW
+TEST-008,18,89.5,1611.0,Fiber optic,Month-to-month,Churn,0.7731,HIGH
+TEST-009,5,35.4,177.0,DSL,One year,Stay,0.2268,LOW
+TEST-010,72,105.5,7596.0,Fiber optic,Two year,Stay,0.1268,LOW

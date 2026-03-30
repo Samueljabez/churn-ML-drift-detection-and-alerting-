@@ -34,6 +34,9 @@ class DriftMonitor:
         alerts_enabled: bool = True,
         alert_on: str = "warning",
         webhook_url: Optional[str] = None,
+        webhook_timeout_seconds: int = 10,
+        webhook_retries: int = 2,
+        alert_cooldown_minutes: int = 0,
     ):
         self.reference_data = reference_data
         self.target_column = target_column
@@ -45,7 +48,13 @@ class DriftMonitor:
         else:
             self.custom_detector = DriftDetector()
         self.alert_on = alert_on
-        self.alert_dispatcher = AlertDispatcher(enabled=alerts_enabled, webhook_url=webhook_url)
+        self.alert_dispatcher = AlertDispatcher(
+            enabled=alerts_enabled,
+            webhook_url=webhook_url,
+            timeout_seconds=webhook_timeout_seconds,
+            max_retries=webhook_retries,
+            cooldown_minutes=alert_cooldown_minutes,
+        )
 
     def run_monitoring(
         self,
@@ -103,6 +112,9 @@ class DriftMonitor:
                 "samples_analyzed": len(current_data),
                 "reference_samples": len(self.reference_data),
                 "alert_policy": self.alert_on,
+                "webhook_timeout_seconds": self.alert_dispatcher.timeout_seconds,
+                "webhook_retries": self.alert_dispatcher.max_retries,
+                "alert_cooldown_minutes": self.alert_dispatcher.cooldown_minutes,
             },
             "input_metadata": input_metadata or {},
             "custom_detector": {
@@ -225,6 +237,9 @@ Examples:
     parser.add_argument("--alert-on", type=str, choices=["warning", "critical"], default="warning", help="Alert threshold")
     parser.add_argument("--disable-alerts", action="store_true", help="Disable alert dispatch")
     parser.add_argument("--webhook-url", type=str, default=None, help="Webhook URL for alert notifications")
+    parser.add_argument("--webhook-timeout", type=int, default=10, help="Webhook timeout in seconds")
+    parser.add_argument("--webhook-retries", type=int, default=2, help="Number of webhook retries after first attempt")
+    parser.add_argument("--alert-cooldown-minutes", type=int, default=0, help="Suppress duplicate alerts during cooldown window")
 
     args = parser.parse_args()
 
@@ -250,6 +265,9 @@ Examples:
         alerts_enabled=not args.disable_alerts,
         alert_on=args.alert_on,
         webhook_url=args.webhook_url,
+        webhook_timeout_seconds=args.webhook_timeout,
+        webhook_retries=args.webhook_retries,
+        alert_cooldown_minutes=args.alert_cooldown_minutes,
     )
 
     report = monitor.run_monitoring(

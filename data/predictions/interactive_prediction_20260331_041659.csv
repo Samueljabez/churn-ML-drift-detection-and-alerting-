@@ -1,0 +1,2 @@
+customer_id,tenure_months,monthly_charges,total_charges,internet_service,contract_type,prediction,churn_probability,risk_level,recommended_action
+INTERACTIVE-20260331_041659,72,85.0,1020.0,DSL,Two year,Stay,0.1031968742609024,🟢 LOW RISK,Standard onboarding - Routine customer care

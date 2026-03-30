@@ -307,6 +307,112 @@ def load_visualization_frames() -> Optional[Dict[str, Any]]:
     }
 
 
+def get_latest_drift_payload() -> Optional[Dict[str, Any]]:
+    """Normalize latest drift payload from either combined or standalone report."""
+    latest_combined = load_latest_combined_report()
+    if latest_combined is not None:
+        detector = latest_combined.get('custom_detector', {})
+        return {
+            'status': detector.get('overall_status', 'UNKNOWN'),
+            'summary': detector.get('summary', {}),
+            'numeric_features': detector.get('numeric_features', {}),
+            'categorical_features': detector.get('categorical_features', {}),
+            'timestamp': latest_combined.get('timestamp', '--'),
+            'samples_analyzed': latest_combined.get('run_metadata', {}).get('samples_analyzed', 0),
+            'alerting': latest_combined.get('alerting', {}),
+        }
+
+    latest = load_latest_report()
+    if latest is not None:
+        return {
+            'status': latest.get('overall_status', 'UNKNOWN'),
+            'summary': latest.get('summary', {}),
+            'numeric_features': latest.get('numeric_features', {}),
+            'categorical_features': latest.get('categorical_features', {}),
+            'timestamp': latest.get('timestamp', '--'),
+            'samples_analyzed': latest.get('summary', {}).get('samples_analyzed', 0),
+            'alerting': {},
+        }
+
+    return None
+
+
+def _severity_score(severity: str) -> float:
+    return {'HIGH': 3.0, 'MEDIUM': 2.0, 'LOW': 1.0}.get(str(severity).upper(), 0.0)
+
+
+def rank_drift_features(payload: Dict[str, Any], top_n: int = 4) -> Dict[str, List[Dict[str, Any]]]:
+    """Rank numeric and categorical features by drift significance."""
+    ranked_numeric: List[Dict[str, Any]] = []
+    ranked_categorical: List[Dict[str, Any]] = []
+
+    for feature, info in payload.get('numeric_features', {}).items():
+        psi = float(info.get('psi', 0) or 0)
+        z_score = abs(float(info.get('z_score', 0) or 0))
+        score = _severity_score(info.get('severity', 'LOW')) * 10 + psi * 5 + z_score
+        ranked_numeric.append({'feature': feature, 'score': score, 'info': info})
+
+    for feature, info in payload.get('categorical_features', {}).items():
+        psi = float(info.get('psi', 0) or 0)
+        max_shift = float(info.get('max_proportion_shift', 0) or 0)
+        score = _severity_score(info.get('severity', 'LOW')) * 10 + max_shift * 20 + psi * 5
+        ranked_categorical.append({'feature': feature, 'score': score, 'info': info})
+
+    ranked_numeric.sort(key=lambda x: x['score'], reverse=True)
+    ranked_categorical.sort(key=lambda x: x['score'], reverse=True)
+
+    return {
+        'numeric': ranked_numeric[:top_n],
+        'categorical': ranked_categorical[:top_n],
+    }
+
+
+def section_drift_command_center():
+    """High-level command center shown first in drift area."""
+    payload = get_latest_drift_payload()
+    if payload is None:
+        st.info("No drift detection reports found. Run monitoring first: python src/run_monitoring.py --data <file>")
+        return
+
+    status = payload.get('status', 'UNKNOWN')
+    summary = payload.get('summary', {})
+    alerting = payload.get('alerting', {})
+    status_class = 'status-ok'
+    if status == 'CRITICAL':
+        status_class = 'status-critical'
+    elif status == 'WARNING':
+        status_class = 'status-warning'
+
+    st.markdown(
+        f"""
+        <div class="hero-card">
+            <h3 style="margin:0;">Drift Detection Command Center</h3>
+            <p style="margin:6px 0 0 0;" class="{status_class}">{get_status_emoji(status)} {status}</p>
+            <p style="margin:6px 0 0 0; opacity:0.9;">Latest check: {format_timestamp(str(payload.get('timestamp', '--')))}</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    c1, c2, c3, c4, c5 = st.columns(5)
+    c1.metric("Samples", payload.get('samples_analyzed', 0))
+    c2.metric("Total Features", summary.get('total_features', 0))
+    c3.metric("High Severity", summary.get('high_severity', 0), delta="urgent")
+    c4.metric("Medium Severity", summary.get('medium_severity', 0), delta="monitor")
+    c5.metric("Alert", alerting.get('alert_level', 'NONE'))
+
+    if alerting:
+        st.markdown(
+            f"""
+            <div class="artifact-card">
+                <b>Alert Triggered:</b> {alerting.get('alert_triggered', False)} &nbsp;|&nbsp;
+                <b>Message:</b> {alerting.get('alert_message', 'No alert message')}
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+
 # ============================================================================
 # Dashboard Sections
 # ============================================================================
@@ -748,7 +854,7 @@ def section_predictions():
 
 
 def section_visual_lab():
-    """Dedicated advanced drift visualizations: KDE, violin, and heatmap."""
+    """Professional drift visual lab with top features and side-by-side distributions."""
     st.header("🧪 Drift Visual Lab")
 
     frames = load_visualization_frames()
@@ -759,99 +865,185 @@ def section_visual_lab():
     reference_df = frames['reference_df']
     current_df = frames['current_df']
     numeric_cols = frames['numeric_cols']
+    payload = get_latest_drift_payload()
 
     st.caption(
         f"Reference: {frames['reference_path']} | Current: {frames['current_path']}"
     )
 
-    # Prefer numerics flagged in latest report; fallback to first numeric feature.
-    latest_report = load_latest_report()
-    candidate_features: List[str] = []
-    if latest_report is not None:
-        numeric_info = latest_report.get('numeric_features', {})
-        for feature_name, info in numeric_info.items():
-            if feature_name in numeric_cols and info.get('severity') in ('HIGH', 'MEDIUM'):
-                candidate_features.append(feature_name)
+    ranked = rank_drift_features(payload, top_n=4) if payload is not None else {'numeric': [], 'categorical': []}
+    candidate_numeric = [x['feature'] for x in ranked['numeric'] if x['feature'] in numeric_cols]
+    if not candidate_numeric:
+        candidate_numeric = numeric_cols[:4]
 
-    if not candidate_features:
-        candidate_features = numeric_cols[:4]
+    st.subheader("Numeric Drift: Violin Plots")
+    violin_cols = st.columns(2)
+    for idx, feature in enumerate(candidate_numeric[:4]):
+        with violin_cols[idx % 2]:
+            ref_vals = pd.to_numeric(reference_df[feature], errors='coerce').dropna().values
+            cur_vals = pd.to_numeric(current_df[feature], errors='coerce').dropna().values
+            violin_df = pd.DataFrame({
+                'value': np.concatenate([ref_vals, cur_vals]) if len(ref_vals) and len(cur_vals) else [],
+                'dataset': (['Reference'] * len(ref_vals)) + (['Drifted'] * len(cur_vals)),
+            })
+            if violin_df.empty:
+                st.info(f"No valid values for {feature}")
+                continue
 
-    feature_for_density = candidate_features[0]
-
-    left, right = st.columns(2)
-
-    with left:
-        st.subheader(f"KDE Plot: {feature_for_density}")
-        ref_vals = pd.to_numeric(reference_df[feature_for_density], errors='coerce').dropna().values
-        cur_vals = pd.to_numeric(current_df[feature_for_density], errors='coerce').dropna().values
-
-        if len(ref_vals) > 1 and len(cur_vals) > 1:
-            x_min = min(float(np.min(ref_vals)), float(np.min(cur_vals)))
-            x_max = max(float(np.max(ref_vals)), float(np.max(cur_vals)))
-            x_grid = np.linspace(x_min, x_max, 250)
-
-            ref_kde = gaussian_kde(ref_vals)(x_grid)
-            cur_kde = gaussian_kde(cur_vals)(x_grid)
-
-            fig_kde = go.Figure()
-            fig_kde.add_trace(go.Scatter(x=x_grid, y=ref_kde, mode='lines', name='Reference', line=dict(color='#00d2ff', width=3)))
-            fig_kde.add_trace(go.Scatter(x=x_grid, y=cur_kde, mode='lines', name='Current', line=dict(color='#ff6b6b', width=3)))
-            fig_kde.update_layout(
-                title='Kernel Density Comparison',
-                xaxis_title=feature_for_density,
-                yaxis_title='Density',
-                template='plotly_dark',
-                height=360,
-            )
-            st.plotly_chart(fig_kde, width='stretch')
-        else:
-            st.info('Not enough samples for KDE plot.')
-
-    with right:
-        st.subheader(f"Violin Plot: {feature_for_density}")
-        violin_df = pd.DataFrame({
-            'value': np.concatenate([ref_vals, cur_vals]) if len(ref_vals) > 0 and len(cur_vals) > 0 else [],
-            'dataset': (['Reference'] * len(ref_vals)) + (['Current'] * len(cur_vals)),
-        })
-        if not violin_df.empty:
             fig_violin = px.violin(
                 violin_df,
                 x='dataset',
                 y='value',
                 color='dataset',
                 box=True,
-                points='all',
-                color_discrete_map={'Reference': '#00d2ff', 'Current': '#ff6b6b'},
-                title='Distribution Shape (Single Feature)',
-                height=360,
+                points='outliers',
+                color_discrete_map={'Reference': '#00d2ff', 'Drifted': '#ff6b6b'},
+                title=f"{feature}: Distribution Shape",
+                height=320,
             )
-            fig_violin.update_layout(template='plotly_dark')
+            fig_violin.update_layout(template='plotly_dark', margin=dict(l=20, r=20, t=48, b=20))
             st.plotly_chart(fig_violin, width='stretch')
+
+    st.subheader("Numeric Drift: Histogram Overlays")
+    hist_cols = st.columns(2)
+    for idx, feature in enumerate(candidate_numeric[:4]):
+        with hist_cols[idx % 2]:
+            ref_vals = pd.to_numeric(reference_df[feature], errors='coerce').dropna().values
+            cur_vals = pd.to_numeric(current_df[feature], errors='coerce').dropna().values
+            hist_df = pd.DataFrame({
+                'value': np.concatenate([ref_vals, cur_vals]) if len(ref_vals) and len(cur_vals) else [],
+                'dataset': (['Reference'] * len(ref_vals)) + (['Drifted'] * len(cur_vals)),
+            })
+            if hist_df.empty:
+                st.info(f"No valid values for {feature}")
+                continue
+
+            fig_hist = px.histogram(
+                hist_df,
+                x='value',
+                color='dataset',
+                barmode='overlay',
+                nbins=24,
+                opacity=0.72,
+                color_discrete_map={'Reference': '#00d2ff', 'Drifted': '#ff6b6b'},
+                title=f"{feature}: Reference vs Drifted",
+                height=320,
+            )
+            fig_hist.update_layout(template='plotly_dark', margin=dict(l=20, r=20, t=48, b=20))
+            st.plotly_chart(fig_hist, width='stretch')
+
+    st.subheader("Categorical Drift: Top Shifted Features")
+    ranked_categorical = ranked.get('categorical', [])
+    categorical_charted = 0
+    cat_cols = st.columns(2)
+    for item in ranked_categorical:
+        feature = item['feature']
+        if feature not in reference_df.columns or feature not in current_df.columns:
+            continue
+
+        ref_props = reference_df[feature].astype(str).value_counts(normalize=True)
+        cur_props = current_df[feature].astype(str).value_counts(normalize=True)
+        categories = sorted(set(ref_props.index).union(set(cur_props.index)))[:8]
+        chart_df = pd.DataFrame({
+            'Category': categories,
+            'Reference': [ref_props.get(c, 0) for c in categories],
+            'Drifted': [cur_props.get(c, 0) for c in categories],
+        })
+
+        melted = chart_df.melt(id_vars='Category', var_name='Dataset', value_name='Proportion')
+        with cat_cols[categorical_charted % 2]:
+            fig_cat = px.bar(
+                melted,
+                x='Category',
+                y='Proportion',
+                color='Dataset',
+                barmode='group',
+                color_discrete_map={'Reference': '#00d2ff', 'Drifted': '#ff6b6b'},
+                title=f"{feature}: Category Proportion Shift",
+                height=340,
+            )
+            fig_cat.update_layout(template='plotly_dark', margin=dict(l=20, r=20, t=48, b=20))
+            st.plotly_chart(fig_cat, width='stretch')
+
+        categorical_charted += 1
+        if categorical_charted >= 4:
+            break
+
+    if categorical_charted == 0:
+        st.info("No categorical features available for drift charting.")
+
+
+def section_feature_snapshots():
+    """Show old vs drifted snapshots for top drift features."""
+    st.header("🧾 Baseline vs Drifted Feature Snapshots")
+
+    frames = load_visualization_frames()
+    payload = get_latest_drift_payload()
+    if frames is None or payload is None:
+        st.info("Unable to load drift snapshots. Ensure reports and datasets are available.")
+        return
+
+    reference_df = frames['reference_df']
+    current_df = frames['current_df']
+    numeric_cols = set(frames['numeric_cols'])
+
+    ranked = rank_drift_features(payload, top_n=4)
+    numeric_top = [x['feature'] for x in ranked['numeric']]
+    categorical_top = [x['feature'] for x in ranked['categorical']]
+
+    combined_top = (numeric_top + categorical_top)[:4]
+    if not combined_top:
+        combined_top = list(reference_df.columns[:4])
+
+    st.subheader("Data Preview: Old vs Drifted")
+    preview_cols = [f for f in combined_top if f in reference_df.columns and f in current_df.columns]
+    if not preview_cols:
+        st.info("No shared top features available for preview.")
+        return
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.caption("Old Data (Reference)")
+        st.dataframe(reference_df[preview_cols].head(8), width='stretch', hide_index=True)
+    with col2:
+        st.caption("Drifted Data (Current)")
+        st.dataframe(current_df[preview_cols].head(8), width='stretch', hide_index=True)
+
+    st.subheader("Feature-by-Feature Comparison")
+    rows = []
+    for feature in preview_cols:
+        if feature in numeric_cols:
+            ref_series = pd.to_numeric(reference_df[feature], errors='coerce').dropna()
+            cur_series = pd.to_numeric(current_df[feature], errors='coerce').dropna()
+            rows.append({
+                'Feature': feature,
+                'Type': 'Numeric',
+                'Reference': f"mean={ref_series.mean():.2f}, std={ref_series.std():.2f}",
+                'Drifted': f"mean={cur_series.mean():.2f}, std={cur_series.std():.2f}",
+            })
         else:
-            st.info('No valid values for violin plot.')
+            ref_top = reference_df[feature].astype(str).value_counts(normalize=True).head(1)
+            cur_top = current_df[feature].astype(str).value_counts(normalize=True).head(1)
+            ref_desc = f"top={ref_top.index[0]} ({ref_top.iloc[0]:.1%})" if not ref_top.empty else 'n/a'
+            cur_desc = f"top={cur_top.index[0]} ({cur_top.iloc[0]:.1%})" if not cur_top.empty else 'n/a'
+            rows.append({
+                'Feature': feature,
+                'Type': 'Categorical',
+                'Reference': ref_desc,
+                'Drifted': cur_desc,
+            })
 
-    st.subheader('Correlation Heatmap')
-    heatmap_features = candidate_features[:6] if len(candidate_features) >= 2 else numeric_cols[:6]
-    current_numeric = current_df[heatmap_features].apply(pd.to_numeric, errors='coerce')
-    corr_df = current_numeric.corr()
-
-    fig_heatmap = px.imshow(
-        corr_df,
-        text_auto='.2f',
-        color_continuous_scale='RdBu_r',
-        zmin=-1,
-        zmax=1,
-        title='Current Batch Feature Correlation Heatmap',
-        aspect='auto',
-    )
-    fig_heatmap.update_layout(template='plotly_dark', height=450)
-    st.plotly_chart(fig_heatmap, width='stretch')
+    st.dataframe(pd.DataFrame(rows), width='stretch', hide_index=True)
 
 
 def section_drift_hub():
     """Dedicated drift area with separated drift subsections."""
     st.header("📡 Drift Section")
-    drift_tab_1, drift_tab_2, drift_tab_3, drift_tab_4 = st.tabs(["Overview", "Features", "History", "Visual Lab"])
+    section_drift_command_center()
+
+    drift_tab_1, drift_tab_2, drift_tab_3, drift_tab_4, drift_tab_5 = st.tabs(
+        ["Overview", "Features", "History", "Visual Lab", "Comparisons"]
+    )
 
     with drift_tab_1:
         section_overview()
@@ -861,6 +1053,8 @@ def section_drift_hub():
         section_drift_history()
     with drift_tab_4:
         section_visual_lab()
+    with drift_tab_5:
+        section_feature_snapshots()
 
 
 def section_settings():

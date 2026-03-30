@@ -274,6 +274,12 @@ python src/run_monitoring.py --data new_batch.csv --alert-on critical
 # Send alerts to webhook
 python src/run_monitoring.py --data new_batch.csv --webhook-url https://example/webhook
 
+# Tune webhook delivery and retries
+python src/run_monitoring.py --data new_batch.csv --webhook-url https://example/webhook --webhook-timeout 20 --webhook-retries 4
+
+# Suppress duplicate alerts for 30 minutes
+python src/run_monitoring.py --data new_batch.csv --alert-cooldown-minutes 30
+
 # Disable alert dispatch
 python src/run_monitoring.py --data new_batch.csv --disable-alerts
 
@@ -284,6 +290,8 @@ python src/run_monitoring.py --data new_batch.csv --reference data/user_testing/
 Generated artifacts:
 - `data/drift_history/drift_report_<timestamp>.json`
 - `data/drift_history/combined_monitoring_report_<batch_id>.json`
+- `data/alerts/alert_events.jsonl`
+- `data/alerts/alert_state.json` (only when cooldown is enabled)
 
 Dashboard:
 
