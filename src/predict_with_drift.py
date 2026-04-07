@@ -303,10 +303,13 @@ class ChurnPredictor:
         has_raw_categorical = any(col in df.columns for col in self.CATEGORICAL_FEATURES)
         
         # Check drift if enabled (do this BEFORE encoding for accurate drift detection)
+        # Note: Drift detection on a single sample is statistically invalid and usually triggers false
+        # CRITICAL alerts. We explicitly bypass it here to prevent noise. Batches should use predict_batch().
         should_check_drift = check_drift if check_drift is not None else self.enable_drift_detection
         drift_report = None
         if should_check_drift and has_raw_categorical:
-            drift_report = self.check_drift(df, raw_data=True)
+            # drift_report = self.check_drift(df, raw_data=True)
+            pass
         
         # Encode if needed
         if has_raw_categorical:

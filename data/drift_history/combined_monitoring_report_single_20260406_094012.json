@@ -1,0 +1,91 @@
+{
+  "batch_id": "single_20260406_094012",
+  "timestamp": "2026-04-06T09:40:13.412717",
+  "run_metadata": {
+    "monitor": "DriftMonitor",
+    "run_mode": "manual_cli",
+    "samples_analyzed": 1,
+    "reference_samples": 500,
+    "alert_policy": "warning",
+    "webhook_timeout_seconds": 10,
+    "webhook_retries": 2,
+    "alert_cooldown_minutes": 0
+  },
+  "input_metadata": {
+    "source": "notebook_prediction_flow"
+  },
+  "custom_detector": {
+    "overall_status": "CRITICAL",
+    "summary": {
+      "total_features": 19,
+      "numeric_drifted": 1,
+      "categorical_drifted": 15,
+      "high_severity": 15,
+      "medium_severity": 1,
+      "samples_analyzed": 1,
+      "timestamp": "2026-04-06T09:40:13.529071",
+      "overall_status": "CRITICAL",
+      "high_severity_features": [
+        "MonthlyCharges",
+        "gender",
+        "Partner",
+        "Dependents",
+        "MultipleLines",
+        "InternetService",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "DeviceProtection",
+        "TechSupport",
+        "StreamingTV",
+        "StreamingMovies",
+        "Contract",
+        "PaperlessBilling",
+        "PaymentMethod"
+      ],
+      "medium_severity_features": [
+        "MonthlyCharges",
+        "gender",
+        "Partner",
+        "Dependents",
+        "PhoneService",
+        "MultipleLines",
+        "InternetService",
+        "OnlineSecurity",
+        "OnlineBackup",
+        "DeviceProtection",
+        "TechSupport",
+        "StreamingTV",
+        "StreamingMovies",
+        "Contract",
+        "PaperlessBilling",
+        "PaymentMethod"
+      ]
+    },
+    "detailed_report": "D:\\production-ready-project\\data\\drift_history\\drift_report_20260406_094013.json"
+  },
+  "alerting": {
+    "alert_triggered": true,
+    "alert_level": "CRITICAL",
+    "alert_message": "Drift status=CRITICAL | high=15, medium=1 | batch=single_20260406_094012",
+    "status": "CRITICAL",
+    "high_severity": 15,
+    "medium_severity": 1,
+    "evaluated_at": "2026-04-06T09:40:13.412717",
+    "enabled": true,
+    "level": "CRITICAL",
+    "message": "Drift status=CRITICAL | high=15, medium=1 | batch=single_20260406_094012",
+    "alert_id": "ALERT-C-4e5137469d",
+    "emitted_at": "2026-04-06T04:10:13.546383+00:00",
+    "suppressed": false,
+    "suppression_reason": null,
+    "console_sent": true,
+    "webhook_sent": false,
+    "webhook_error": null,
+    "webhook_attempts": 0,
+    "alerts_log": "D:\\production-ready-project\\data\\alerts\\alert_events.jsonl"
+  },
+  "artifacts": {
+    "custom_report_json": "D:\\production-ready-project\\data\\drift_history\\drift_report_20260406_094013.json"
+  },
+  "combined_verdict": "CRITICAL - Drift alert triggered. Immediate action recommended."
+}

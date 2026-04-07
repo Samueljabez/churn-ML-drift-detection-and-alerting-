@@ -1,0 +1,48 @@
+{
+  "batch_id": "ui_baseline_large_082532",
+  "timestamp": "2026-04-07T08:25:32.880552",
+  "run_metadata": {
+    "monitor": "DriftMonitor",
+    "run_mode": "manual_cli",
+    "samples_analyzed": 500,
+    "reference_samples": 500,
+    "alert_policy": "warning",
+    "webhook_timeout_seconds": 10,
+    "webhook_retries": 2,
+    "alert_cooldown_minutes": 0
+  },
+  "input_metadata": {},
+  "custom_detector": {
+    "overall_status": "OK",
+    "summary": {
+      "total_features": 19,
+      "numeric_drifted": 0,
+      "categorical_drifted": 0,
+      "high_severity": 0,
+      "medium_severity": 0,
+      "samples_analyzed": 500,
+      "timestamp": "2026-04-07T08:25:32.899997",
+      "overall_status": "OK",
+      "high_severity_features": [],
+      "medium_severity_features": []
+    },
+    "detailed_report": "D:\\production-ready-project\\data\\drift_history\\drift_report_20260407_082532.json"
+  },
+  "alerting": {
+    "alert_triggered": false,
+    "alert_level": "NONE",
+    "alert_message": "No alert triggered for current drift status",
+    "status": "OK",
+    "high_severity": 0,
+    "medium_severity": 0,
+    "evaluated_at": "2026-04-07T08:25:32.880552",
+    "enabled": true,
+    "console_sent": false,
+    "webhook_sent": false,
+    "webhook_error": null
+  },
+  "artifacts": {
+    "custom_report_json": "D:\\production-ready-project\\data\\drift_history\\drift_report_20260407_082532.json"
+  },
+  "combined_verdict": "OK - No significant drift detected."
+}

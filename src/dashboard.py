@@ -1,4 +1,4 @@
-"""
+﻿"""
 Interactive Drift Detection Dashboard
 
 Streamlit-based dashboard for monitoring and visualizing data drift over time.
@@ -367,6 +367,66 @@ def rank_drift_features(payload: Dict[str, Any], top_n: int = 4) -> Dict[str, Li
     }
 
 
+def section_home():
+    """Home screen to select data and run drift detection."""
+    st.markdown("<h2>🏠 Data Drift & Prediction Home</h2>", unsafe_allow_html=True)
+    st.write("Select a batch of customer data to analyze for potential drift against standard training baselines.")
+    
+    # Locate data files
+    data_dir = Path("data")
+    testing_dir = data_dir / "user_testing"
+    stats_path = data_dir / "processed" / "training_reference_stats.json"
+    
+    if not testing_dir.exists():
+        st.warning(f"Could not find `{testing_dir}` directory.")
+        return
+
+    csv_files = [f.name for f in testing_dir.glob("*.csv")]
+    if not csv_files:
+        st.info(f"No CSV files found in `{testing_dir}`.")
+        return
+
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        selected_file = st.selectbox("Select CSV Batch for Analysis:", csv_files)
+    
+    if st.button("Run Drift Detection", type="primary", use_container_width=True):
+        with st.spinner(f"Analyzing {selected_file} for Data Drift..."):
+            try:
+                import sys
+                src_path = str(Path(__file__).parent.resolve())
+                if src_path not in sys.path:
+                    sys.path.append(src_path)
+                
+                from run_monitoring import DriftMonitor
+                
+                current_df = pd.read_csv(testing_dir / selected_file)
+                
+                # Pick baseline reference securely
+                ref_file = "baseline_large.csv" if "baseline_large.csv" in csv_files else csv_files[0]
+                reference_df = pd.read_csv(testing_dir / ref_file)
+                
+                # Initialize & Run Monitor
+                monitor = DriftMonitor(
+                    reference_data=reference_df,
+                    training_stats_path=str(stats_path) if stats_path.exists() else None,
+                    alerts_enabled=True,
+                    alert_on="warning"
+                )
+                
+                # We save it using a unique UI batch name
+                report = monitor.run_monitoring(
+                    current_data=current_df,
+                    batch_name=f"ui_{selected_file.split('.')[0]}_{datetime.now().strftime('%H%M%S')}"
+                )
+                
+                st.success(f"✅ Drift Detection Completed! Result: **{report['combined_verdict']}**")
+                st.info("The latest report has been generated. Use the top navigation (▶ or click '📡 Drift Section') to view detailed analysis.")
+                
+            except Exception as e:
+                st.error(f"Error running drift detection: {str(e)}")
+
+
 def section_drift_command_center():
     """High-level command center shown first in drift area."""
     payload = get_latest_drift_payload()
@@ -576,7 +636,7 @@ def section_feature_details():
                     subset=['Severity']
                 )
                 
-                st.dataframe(styled_df, width='stretch', hide_index=True)
+                st.dataframe(styled_df, use_container_width=True, hide_index=True)
                 
                 # Charts
                 col1, col2 = st.columns(2)
@@ -592,7 +652,7 @@ def section_feature_details():
                         title='Mean Shift (Z-Score)',
                         height=400
                     )
-                    st.plotly_chart(fig, width='stretch')
+                    st.plotly_chart(fig, use_container_width=True)
                 
                 with col2:
                     st.subheader("PSI Distribution")
@@ -605,7 +665,7 @@ def section_feature_details():
                         title='Population Stability Index',
                         height=400
                     )
-                    st.plotly_chart(fig, width='stretch')
+                    st.plotly_chart(fig, use_container_width=True)
     
     with tab2:
         st.subheader("Categorical Features (Chi-Square, Proportion Shift, PSI)")
@@ -631,7 +691,7 @@ def section_feature_details():
             if categorical_data:
                 df_categorical = pd.DataFrame(categorical_data)
                 
-                st.dataframe(df_categorical, width='stretch', hide_index=True)
+                st.dataframe(df_categorical, use_container_width=True, hide_index=True)
                 
                 # Charts
                 col1, col2 = st.columns(2)
@@ -647,7 +707,7 @@ def section_feature_details():
                         title='Maximum Category Proportion Change',
                         height=400
                     )
-                    st.plotly_chart(fig, width='stretch')
+                    st.plotly_chart(fig, use_container_width=True)
                 
                 with col2:
                     st.subheader("PSI Distribution")
@@ -660,7 +720,7 @@ def section_feature_details():
                         title='Population Stability Index',
                         height=400
                     )
-                    st.plotly_chart(fig, width='stretch')
+                    st.plotly_chart(fig, use_container_width=True)
 
 
 def section_drift_history():
@@ -724,7 +784,7 @@ def section_drift_history():
             height=400,
             hovermode='x unified'
         )
-        st.plotly_chart(fig, width='stretch')
+        st.plotly_chart(fig, use_container_width=True)
         
         # Feature drift count trend
         col1, col2 = st.columns(2)
@@ -740,7 +800,7 @@ def section_drift_history():
                 height=400
             )
             fig.update_traces(line=dict(color='#dc3545', width=3))
-            st.plotly_chart(fig, width='stretch')
+            st.plotly_chart(fig, use_container_width=True)
         
         with col2:
             st.subheader("Medium Severity Features Over Time")
@@ -753,7 +813,7 @@ def section_drift_history():
                 height=400
             )
             fig.update_traces(line=dict(color='#ffc107', width=3))
-            st.plotly_chart(fig, width='stretch')
+            st.plotly_chart(fig, use_container_width=True)
 
         st.subheader("Alert Events Over Time")
         alert_events = df_history[df_history['Alert Triggered']]
@@ -767,7 +827,7 @@ def section_drift_history():
                 title='Triggered Alerts Timeline',
                 height=350
             )
-            st.plotly_chart(fig, width='stretch')
+            st.plotly_chart(fig, use_container_width=True)
         else:
             st.info("No alerts triggered in selected history window.")
         
@@ -834,7 +894,7 @@ def section_predictions():
                 """,
                 unsafe_allow_html=True,
             )
-            st.image(str(latest_single_png), caption='Latest single prediction report', width='stretch')
+            st.image(str(latest_single_png), caption='Latest single prediction report', use_container_width=True)
         else:
             st.info('No single prediction PNG found yet.')
 
@@ -848,7 +908,7 @@ def section_predictions():
                 """,
                 unsafe_allow_html=True,
             )
-            st.image(str(latest_batch_png), caption='Latest batch prediction report', width='stretch')
+            st.image(str(latest_batch_png), caption='Latest batch prediction report', use_container_width=True)
         else:
             st.info('No batch prediction PNG found yet.')
 
@@ -902,7 +962,7 @@ def section_visual_lab():
                 height=320,
             )
             fig_violin.update_layout(template='plotly_dark', margin=dict(l=20, r=20, t=48, b=20))
-            st.plotly_chart(fig_violin, width='stretch')
+            st.plotly_chart(fig_violin, use_container_width=True)
 
     st.subheader("Numeric Drift: Histogram Overlays")
     hist_cols = st.columns(2)
@@ -930,7 +990,7 @@ def section_visual_lab():
                 height=320,
             )
             fig_hist.update_layout(template='plotly_dark', margin=dict(l=20, r=20, t=48, b=20))
-            st.plotly_chart(fig_hist, width='stretch')
+            st.plotly_chart(fig_hist, use_container_width=True)
 
     st.subheader("Categorical Drift: Top Shifted Features")
     ranked_categorical = ranked.get('categorical', [])
@@ -963,7 +1023,7 @@ def section_visual_lab():
                 height=340,
             )
             fig_cat.update_layout(template='plotly_dark', margin=dict(l=20, r=20, t=48, b=20))
-            st.plotly_chart(fig_cat, width='stretch')
+            st.plotly_chart(fig_cat, use_container_width=True)
 
         categorical_charted += 1
         if categorical_charted >= 4:
@@ -1004,10 +1064,10 @@ def section_feature_snapshots():
     col1, col2 = st.columns(2)
     with col1:
         st.caption("Old Data (Reference)")
-        st.dataframe(reference_df[preview_cols].head(8), width='stretch', hide_index=True)
+        st.dataframe(reference_df[preview_cols].head(8), use_container_width=True, hide_index=True)
     with col2:
         st.caption("Drifted Data (Current)")
-        st.dataframe(current_df[preview_cols].head(8), width='stretch', hide_index=True)
+        st.dataframe(current_df[preview_cols].head(8), use_container_width=True, hide_index=True)
 
     st.subheader("Feature-by-Feature Comparison")
     rows = []
@@ -1033,7 +1093,7 @@ def section_feature_snapshots():
                 'Drifted': cur_desc,
             })
 
-    st.dataframe(pd.DataFrame(rows), width='stretch', hide_index=True)
+    st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
 
 def section_drift_hub():
@@ -1133,7 +1193,7 @@ def main():
         unsafe_allow_html=True,
     )
 
-    pages = ["📡 Drift Section", "🧾 Prediction Section", "⚙️ Settings"]
+    pages = ["🏠 Home", "📡 Drift Section", "🧾 Prediction Section", "⚙️ Settings"]
     if 'window_index' not in st.session_state:
         st.session_state.window_index = 0
 
@@ -1203,7 +1263,9 @@ def main():
     )
 
     # Route pages within animated shell
-    if page == "📡 Drift Section":
+    if page == "🏠 Home":
+        section_home()
+    elif page == "📡 Drift Section":
         section_drift_hub()
     elif page == "🧾 Prediction Section":
         section_predictions()
